@@ -22,6 +22,11 @@ if ( ! defined( 'LUMIERE_URI' ) ) {
 	define( 'LUMIERE_URI', get_template_directory_uri() );
 }
 
+// Bootstrap includes
+if ( file_exists( LUMIERE_DIR . '/inc/bootstrap.php' ) ) {
+	require_once LUMIERE_DIR . '/inc/bootstrap.php';
+}
+
 /**
  * Theme setup
  */
@@ -53,6 +58,9 @@ function lumiere_setup() {
 	add_theme_support( 'align-wide' );
 	add_theme_support( 'editor-styles' );
 	add_editor_style( 'assets/css/main.css' );
+
+	// Elementor compatibility: use theme styles.
+	add_theme_support( 'elementor-default-kit' );
 
 	// Featured image sizes.
 	add_image_size( 'portfolio-large', 2000, 1333, true );
@@ -143,7 +151,7 @@ function lumiere_register_cpt_galleries() {
 		'menu_icon'          => 'dashicons-format-gallery',
 		'show_in_rest'       => true,
 		'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
-		rewrite'            => array( 'slug' => 'galeries' ),
+		'rewrite'            => array( 'slug' => 'galeries' ),
 	);
 
 	register_post_type( 'lumiere_gallery', $args );
@@ -166,7 +174,7 @@ function lumiere_register_taxonomies() {
 		'show_ui'           => true,
 		'show_admin_column' => true,
 		'show_in_rest'      => true,
-		rewrite'           => array( 'slug' => 'genre' ),
+		'rewrite'           => array( 'slug' => 'genre' ),
 	) );
 
 	// Sessions (Studio, Extérieur, Nuit, etc.).
@@ -181,7 +189,7 @@ function lumiere_register_taxonomies() {
 		'show_ui'           => true,
 		'show_admin_column' => true,
 		'show_in_rest'      => true,
-		rewrite'           => array( 'slug' => 'session' ),
+		'rewrite'           => array( 'slug' => 'session' ),
 	) );
 }
 add_action( 'init', 'lumiere_register_taxonomies' );
