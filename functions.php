@@ -1,17 +1,20 @@
 <?php
 /**
- * Lumière Portfolio functions and definitions
- *
- * @package Lumiere_Portfolio
+ * Lumière Portfolio - Functions and Definitions
+ * 
+ * Premium WordPress theme for photographers
+ * 
+ * @package Lumière_Portfolio
+ * @version 2.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
+	exit; // Exit if accessed directly
 }
 
-// THEME CONSTANTS
+// ===== THEME CONSTANTS =====
 if ( ! defined( 'LUMIERE_VERSION' ) ) {
-	define( 'LUMIERE_VERSION', '1.0.0' );
+	define( 'LUMIERE_VERSION', '2.0.0' );
 }
 
 if ( ! defined( 'LUMIERE_DIR' ) ) {
@@ -22,61 +25,118 @@ if ( ! defined( 'LUMIERE_URI' ) ) {
 	define( 'LUMIERE_URI', get_template_directory_uri() );
 }
 
-// Bootstrap includes
-if ( file_exists( LUMIERE_DIR . '/inc/bootstrap.php' ) ) {
-	require_once LUMIERE_DIR . '/inc/bootstrap.php';
+// ===== LOAD THEME MODULES =====
+$modules = array(
+	'inc/bootstrap.php',
+	'inc/post-types.php',
+	'inc/taxonomies.php',
+	'inc/customizer.php',
+	'inc/ajax-handlers.php',
+	'inc/image-optimization.php',
+	'inc/contact-form.php',
+);
+
+foreach ( $modules as $module ) {
+	if ( file_exists( LUMIERE_DIR . '/' . $module ) ) {
+		require_once LUMIERE_DIR . '/' . $module;
+	}
 }
 
 /**
- * Theme setup
+ * Theme Setup
+ * Configure theme features and support
  */
 function lumiere_setup() {
-	// Let WordPress manage the document title.
+	// Let WordPress manage the document title
 	add_theme_support( 'title-tag' );
 
-	// Support for post thumbnails.
+	// Post thumbnails
 	add_theme_support( 'post-thumbnails' );
 
-	// Custom logo support.
+	// Custom logo
 	add_theme_support( 'custom-logo', array(
-		'height'      => 40,
-		'width'       => 160,
+		'height'      => 60,
+		'width'       => 200,
 		'flex-height' => true,
 		'flex-width'  => true,
 	) );
 
-	// Menus.
+	// Navigation menus
 	register_nav_menus( array(
-		'header_menu' => __( 'Header Menu', 'lumiere-portfolio' ),
-		'footer_menu' => __( 'Footer Menu', 'lumiere-portfolio' ),
+		'header_menu' => __( 'Menu principal', 'lumiere-portfolio' ),
+		'footer_menu' => __( 'Menu pied de page', 'lumiere-portfolio' ),
+		'social_menu' => __( 'Menu réseaux sociaux', 'lumiere-portfolio' ),
 	) );
 
-	// HTML5 markup support.
-	add_theme_support( 'html5', array( 'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script' ) );
+	// HTML5 markup
+	add_theme_support( 'html5', array(
+		'search-form',
+		'comment-form',
+		'comment-list',
+		'gallery',
+		'caption',
+		'style',
+		'script',
+	) );
 
-	// Gutenberg support.
+	// Gutenberg features
 	add_theme_support( 'align-wide' );
+	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'editor-styles' );
-	add_editor_style( 'assets/css/main.css' );
+	add_editor_style( 'assets/css/editor-style.css' );
 
-	// Elementor compatibility: use theme styles.
-	add_theme_support( 'elementor-default-kit' );
+	// Custom background
+	add_theme_support( 'custom-background', array(
+		'default-color' => 'ffffff',
+	) );
 
-	// Featured image sizes.
-	add_image_size( 'portfolio-large', 2000, 1333, true );
-	add_image_size( 'portfolio-grid', 1200, 800, true );
-	add_image_size( 'portfolio-thumb', 600, 400, true );
+	// Selective refresh for widgets
+	add_theme_support( 'customize-selective-refresh-widgets' );
+
+	// WooCommerce support (for future e-commerce features)
+	add_theme_support( 'woocommerce' );
+	add_theme_support( 'wc-product-gallery-zoom' );
+	add_theme_support( 'wc-product-gallery-lightbox' );
+	add_theme_support( 'wc-product-gallery-slider' );
+
+	// RSS feed links
+	add_theme_support( 'automatic-feed-links' );
+
+	// Set content width
+	if ( ! isset( $content_width ) ) {
+		$content_width = 1200;
+	}
 }
 add_action( 'after_setup_theme', 'lumiere_setup' );
 
 /**
- * Register widget areas (sidebars)
+ * Register Widget Areas
  */
 function lumiere_widgets_init() {
 	register_sidebar( array(
-		'name'          => __( 'Footer Widgets', 'lumiere-portfolio' ),
+		'name'          => __( 'Pied de page 1', 'lumiere-portfolio' ),
 		'id'            => 'footer-1',
-		'description'   => __( 'Widgets affichés dans le pied de page.', 'lumiere-portfolio' ),
+		'description'   => __( 'Première colonne du pied de page', 'lumiere-portfolio' ),
+		'before_widget' => '<section id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</section>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>',
+	) );
+
+	register_sidebar( array(
+		'name'          => __( 'Pied de page 2', 'lumiere-portfolio' ),
+		'id'            => 'footer-2',
+		'description'   => __( 'Deuxième colonne du pied de page', 'lumiere-portfolio' ),
+		'before_widget' => '<section id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</section>',
+		'before_title'  => '<h3 class="widget-title">',
+		'after_title'   => '</h3>',
+	) );
+
+	register_sidebar( array(
+		'name'          => __( 'Pied de page 3', 'lumiere-portfolio' ),
+		'id'            => 'footer-3',
+		'description'   => __( 'Troisième colonne du pied de page', 'lumiere-portfolio' ),
 		'before_widget' => '<section id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</section>',
 		'before_title'  => '<h3 class="widget-title">',
@@ -86,18 +146,21 @@ function lumiere_widgets_init() {
 add_action( 'widgets_init', 'lumiere_widgets_init' );
 
 /**
- * Enqueue scripts and styles
+ * Enqueue Scripts and Styles
  */
 function lumiere_enqueue_assets() {
-	// Google Fonts.
+	// Google Fonts
+	$heading_font = get_theme_mod( 'lumiere_heading_font', 'Playfair Display' );
+	$body_font = get_theme_mod( 'lumiere_body_font', 'Inter' );
+	
 	wp_enqueue_style(
 		'lumiere-google-fonts',
-		'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap',
+		'https://fonts.googleapis.com/css2?family=' . urlencode( $heading_font ) . ':wght@400;500;600;700&family=' . urlencode( $body_font ) . ':wght@300;400;500;600&display=swap',
 		array(),
 		LUMIERE_VERSION
 	);
 
-	// Main stylesheet.
+	// Main stylesheet
 	wp_enqueue_style(
 		'lumiere-main',
 		LUMIERE_URI . '/assets/css/main.css',
@@ -105,10 +168,25 @@ function lumiere_enqueue_assets() {
 		LUMIERE_VERSION
 	);
 
-	// Deregister WP-embed if not needed (performance).
-	wp_deregister_script( 'wp-embed' );
+	// Gallery styles
+	wp_enqueue_style(
+		'lumiere-gallery',
+		LUMIERE_URI . '/assets/css/gallery.css',
+		array( 'lumiere-main' ),
+		LUMIERE_VERSION
+	);
 
-	// Main JS.
+	// Lightbox styles
+	if ( get_theme_mod( 'lumiere_enable_lightbox', true ) ) {
+		wp_enqueue_style(
+			'lumiere-lightbox',
+			LUMIERE_URI . '/assets/css/lightbox.css',
+			array( 'lumiere-main' ),
+			LUMIERE_VERSION
+		);
+	}
+
+	// Main JavaScript
 	wp_enqueue_script(
 		'lumiere-main',
 		LUMIERE_URI . '/assets/js/main.js',
@@ -117,105 +195,146 @@ function lumiere_enqueue_assets() {
 		true
 	);
 
-	// Pass data to JS.
+	// Gallery filter
+	wp_enqueue_script(
+		'lumiere-gallery-filter',
+		LUMIERE_URI . '/assets/js/gallery-filter.js',
+		array( 'jquery', 'lumiere-main' ),
+		LUMIERE_VERSION,
+		true
+	);
+
+	// Lightbox
+	if ( get_theme_mod( 'lumiere_enable_lightbox', true ) ) {
+		wp_enqueue_script(
+			'lumiere-lightbox',
+			LUMIERE_URI . '/assets/js/lightbox.js',
+			array( 'jquery' ),
+			LUMIERE_VERSION,
+			true
+		);
+	}
+
+	// Localize scripts
 	wp_localize_script( 'lumiere-main', 'lumiereSettings', array(
 		'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+		'siteUrl' => home_url(),
+		'themeUrl' => LUMIERE_URI,
 	) );
+
+	// Remove unnecessary scripts
+	wp_deregister_script( 'wp-embed' );
 }
 add_action( 'wp_enqueue_scripts', 'lumiere_enqueue_assets' );
 
 /**
- * Register Custom Post Type: Galleries
+ * Admin Scripts and Styles
  */
-function lumiere_register_cpt_galleries() {
-	$labels = array(
-		'name'               => __( 'Galeries', 'lumiere-portfolio' ),
-		'singular_name'      => __( 'Galerie', 'lumiere-portfolio' ),
-		'add_new'            => __( 'Ajouter une nouvelle', 'lumiere-portfolio' ),
-		'add_new_item'       => __( 'Ajouter une nouvelle galerie', 'lumiere-portfolio' ),
-		'edit_item'          => __( 'Modifier la galerie', 'lumiere-portfolio' ),
-		'new_item'           => __( 'Nouvelle galerie', 'lumiere-portfolio' ),
-		'all_items'          => __( 'Toutes les galeries', 'lumiere-portfolio' ),
-		'view_item'          => __( 'Voir la galerie', 'lumiere-portfolio' ),
-		'search_items'       => __( 'Rechercher des galeries', 'lumiere-portfolio' ),
-		'not_found'          => __( 'Aucune galerie trouvée', 'lumiere-portfolio' ),
-		'not_found_in_trash' => __( 'Aucune galerie dans la corbeille', 'lumiere-portfolio' ),
-		'menu_name'          => __( 'Galeries', 'lumiere-portfolio' ),
+function lumiere_admin_scripts( $hook ) {
+	if ( 'post.php' !== $hook && 'post-new.php' !== $hook ) {
+		return;
+	}
+
+	// Admin styles for gallery meta boxes
+	wp_enqueue_style(
+		'lumiere-admin',
+		LUMIERE_URI . '/assets/css/admin.css',
+		array(),
+		LUMIERE_VERSION
 	);
 
-	$args = array(
-		'labels'             => $labels,
-		'public'             => true,
-		'has_archive'        => true,
-		'menu_position'      => 5,
-		'menu_icon'          => 'dashicons-format-gallery',
-		'show_in_rest'       => true,
-		'supports'           => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
-		'rewrite'            => array( 'slug' => 'galeries' ),
-	);
+	// Media uploader
+	wp_enqueue_media();
 
-	register_post_type( 'lumiere_gallery', $args );
+	// Admin JavaScript
+	wp_enqueue_script(
+		'lumiere-admin',
+		LUMIERE_URI . '/assets/js/admin.js',
+		array( 'jquery', 'jquery-ui-sortable' ),
+		LUMIERE_VERSION,
+		true
+	);
 }
-add_action( 'init', 'lumiere_register_cpt_galleries' );
+add_action( 'admin_enqueue_scripts', 'lumiere_admin_scripts' );
 
 /**
- * Register taxonomies: Genres, Sessions
+ * Performance Optimizations
  */
-function lumiere_register_taxonomies() {
-	// Genres (Portrait, Mariage, Street, etc.).
-	$genre_labels = array(
-		'name'          => __( 'Genres', 'lumiere-portfolio' ),
-		'singular_name' => __( 'Genre', 'lumiere-portfolio' ),
-	);
-
-	register_taxonomy( 'lumiere_genre', 'lumiere_gallery', array(
-		'hierarchical'      => true,
-		'labels'            => $genre_labels,
-		'show_ui'           => true,
-		'show_admin_column' => true,
-		'show_in_rest'      => true,
-		'rewrite'           => array( 'slug' => 'genre' ),
-	) );
-
-	// Sessions (Studio, Extérieur, Nuit, etc.).
-	$session_labels = array(
-		'name'          => __( 'Sessions', 'lumiere-portfolio' ),
-		'singular_name' => __( 'Session', 'lumiere-portfolio' ),
-	);
-
-	register_taxonomy( 'lumiere_session', 'lumiere_gallery', array(
-		'hierarchical'      => false,
-		'labels'            => $session_labels,
-		'show_ui'           => true,
-		'show_admin_column' => true,
-		'show_in_rest'      => true,
-		'rewrite'           => array( 'slug' => 'session' ),
-	) );
-}
-add_action( 'init', 'lumiere_register_taxonomies' );
-
-/**
- * Clean up head for performance/SEO
- */
-function lumiere_cleanup_head() {
+function lumiere_performance_optimizations() {
+	// Remove WordPress version
 	remove_action( 'wp_head', 'wp_generator' );
+	
+	// Remove RSD link
 	remove_action( 'wp_head', 'rsd_link' );
+	
+	// Remove Windows Live Writer link
 	remove_action( 'wp_head', 'wlwmanifest_link' );
+	
+	// Remove REST API link
 	remove_action( 'wp_head', 'rest_output_link_wp_head' );
+	
+	// Remove oEmbed discovery links
 	remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+	
+	// Remove shortlink
+	remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+	
+	// Disable emoji scripts
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
 }
-add_action( 'init', 'lumiere_cleanup_head' );
+add_action( 'init', 'lumiere_performance_optimizations' );
 
 /**
- * Add loading="lazy" by default for images
+ * Disable Gutenberg for certain post types
  */
-function lumiere_add_lazy_loading( $attr, $attachment, $size ) {
-	$attr['loading'] = 'lazy';
-	return $attr;
+function lumiere_disable_gutenberg( $use_block_editor, $post_type ) {
+	if ( 'lumiere_gallery' === $post_type ) {
+		return false;
+	}
+	return $use_block_editor;
 }
-add_filter( 'wp_get_attachment_image_attributes', 'lumiere_add_lazy_loading', 10, 3 );
+add_filter( 'use_block_editor_for_post_type', 'lumiere_disable_gutenberg', 10, 2 );
 
 /**
- * Include template tags / helpers if needed later
+ * Custom excerpt length
  */
-// require_once LUMIERE_DIR . '/inc/template-tags.php';
+function lumiere_excerpt_length( $length ) {
+	return 25;
+}
+add_filter( 'excerpt_length', 'lumiere_excerpt_length' );
+
+/**
+ * Custom excerpt more
+ */
+function lumiere_excerpt_more( $more ) {
+	return '...';
+}
+add_filter( 'excerpt_more', 'lumiere_excerpt_more' );
+
+/**
+ * Add custom body classes
+ */
+function lumiere_body_classes( $classes ) {
+	// Add class for layout
+	$layout = get_theme_mod( 'lumiere_site_layout', 'full-width' );
+	$classes[] = 'layout-' . $layout;
+	
+	// Add class if lightbox is enabled
+	if ( get_theme_mod( 'lumiere_enable_lightbox', true ) ) {
+		$classes[] = 'has-lightbox';
+	}
+	
+	// Add singular class
+	if ( is_singular() ) {
+		$classes[] = 'singular-' . get_post_type();
+	}
+	
+	return $classes;
+}
+add_filter( 'body_class', 'lumiere_body_classes' );
+
+/**
+ * Custom template tags and helper functions
+ */
+require_once LUMIERE_DIR . '/inc/template-tags.php';
