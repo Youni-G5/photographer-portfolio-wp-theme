@@ -1,0 +1,274 @@
+/**
+ * Lumière Lightbox Styles
+ * Modern, responsive lightbox with smooth animations
+ */
+
+/* Prevent body scroll when lightbox is open */
+body.lightbox-open {
+	overflow: hidden;
+}
+
+/* Main lightbox container */
+.lumiere-lightbox {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.lumiere-lightbox[style*="display: block"] {
+	opacity: 1;
+}
+
+/* Dark overlay */
+.lightbox-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.95);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+}
+
+/* Content container */
+.lightbox-container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 60px 20px;
+}
+
+/* Close button */
+.lightbox-close {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	z-index: 10001;
+	width: 44px;
+	height: 44px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 50%;
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+}
+
+.lightbox-close:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transform: rotate(90deg);
+}
+
+/* Navigation buttons */
+.lightbox-prev,
+.lightbox-next {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 10001;
+	width: 50px;
+	height: 50px;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 50%;
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.3s ease;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+	background: rgba(255, 255, 255, 0.2);
+	transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-prev {
+	left: 30px;
+}
+
+.lightbox-next {
+	right: 30px;
+}
+
+/* Content area */
+.lightbox-content {
+	position: relative;
+	max-width: 90vw;
+	max-height: 90vh;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+/* Main image */
+.lightbox-image {
+	max-width: 100%;
+	max-height: calc(90vh - 100px);
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	display: block;
+	box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+	transition: opacity 0.3s ease;
+	border-radius: 4px;
+}
+
+/* Caption */
+.lightbox-caption {
+	color: #fff;
+	margin-top: 20px;
+	text-align: center;
+	font-size: 16px;
+	line-height: 1.5;
+	max-width: 600px;
+	opacity: 0.9;
+	font-weight: 300;
+}
+
+/* Image counter */
+.lightbox-counter {
+	position: absolute;
+	bottom: -50px;
+	left: 50%;
+	transform: translateX(-50%);
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 14px;
+	font-weight: 300;
+	letter-spacing: 1px;
+}
+
+/* Loader */
+.lightbox-loader {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 10000;
+}
+
+.spinner {
+	width: 50px;
+	height: 50px;
+	border: 3px solid rgba(255, 255, 255, 0.2);
+	border-top-color: #fff;
+	border-radius: 50%;
+	animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+	to { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.lightbox-container {
+		padding: 40px 10px;
+	}
+
+	.lightbox-close {
+		top: 10px;
+		right: 10px;
+		width: 40px;
+		height: 40px;
+	}
+
+	.lightbox-prev,
+	.lightbox-next {
+		width: 40px;
+		height: 40px;
+	}
+
+	.lightbox-prev {
+		left: 10px;
+	}
+
+	.lightbox-next {
+		right: 10px;
+	}
+
+	.lightbox-content {
+		max-width: 95vw;
+		max-height: 85vh;
+	}
+
+	.lightbox-image {
+		max-height: calc(85vh - 80px);
+	}
+
+	.lightbox-caption {
+		font-size: 14px;
+		margin-top: 15px;
+		padding: 0 10px;
+	}
+
+	.lightbox-counter {
+		bottom: -35px;
+		font-size: 12px;
+	}
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+	.lightbox-prev,
+	.lightbox-next {
+		background: rgba(255, 255, 255, 0.15);
+	}
+}
+
+/* Animation for image fade-in */
+@keyframes fadeInImage {
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+.lightbox-image {
+	animation: fadeInImage 0.3s ease-out;
+}
+
+/* Prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+	.lumiere-lightbox,
+	.lightbox-image,
+	.lightbox-close,
+	.lightbox-prev,
+	.lightbox-next {
+		transition: none;
+		animation: none;
+	}
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.lightbox-overlay {
+		background: rgba(0, 0, 0, 1);
+	}
+
+	.lightbox-close,
+	.lightbox-prev,
+	.lightbox-next {
+		border: 2px solid #fff;
+		background: rgba(0, 0, 0, 0.8);
+	}
+}
